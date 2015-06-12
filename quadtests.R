@@ -8,3 +8,5 @@ data.frame(dist.test = adair@data$dist1==0 & adair@data$dist2 > 0)
 data.frame(twin.test = adair@data$diam1 == adair@data$diam2)
 #test to see if a tree hass too small of a diameter (what would too small be?). is 1 okay to use?
 data.frame(small.test = adair@data$diam1 < 1 & adair@data$diam2 < 1 & adair@data$diam3 < 1 & adair@data$diam4 < 1)
+# test to see if distance recorded is >500
+data.frame(lgdist.test = map@data$dist1 > 500 & map@data$dist2 > 500 & map@data$dist3 > 500 & map@data$dist4 > 500)
