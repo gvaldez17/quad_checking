@@ -2,8 +2,8 @@
 data.frame(az.test = adair@data$az1 > 90, diam.test = is.na(adair@data$diam1) & !is.na(adair@data$diam2))
 #this test doent work because they are not numerical?
 data.frame(val.test = adair@data$species1 > 0 & adair@data$species2 > 0)
-#test to see if tree one has no value (0) while tree two has a value
-data.frame(dist.test = adair@data$dist1==0 & adair@data$dist2 > 0)
+#test to see if tree one has no value (0) while tree two has a value (distance)
+data.frame(nodist.test = adair@data$dist1==0 & adair@data$dist2 > 0)
 #test to see if two trees have same data..how to write: do any two trees have the same data all across the board?
 data.frame(twin.test = adair@data$diam1 == adair@data$diam2)
 #test to see if a tree hass too small of a diameter (what would too small be?). is 1 okay to use?
@@ -12,3 +12,7 @@ data.frame(small.test = adair@data$diam1 < 1 & adair@data$diam2 < 1 & adair@data
 data.frame(lgdist.test = map@data$dist1 > 500 & map@data$dist2 > 500 & map@data$dist3 > 500 & map@data$dist4 > 500)
 #test to see if diameter is greater than 60 inches
 data.frame(lgdiam.test = map@data$diam1 > 60 & map@data$diam2 > 60 & map@data$diam3 > 60 & map@data$diam4 > 60)
+#test to see if tree one has no value (0) while tree two has a value (diameter)
+data.frame(nodiam.test = map@data$diam1==0 & map@data$diam2 > 0)
+#test to see if ree one has no value (0) while tree two has a value (azimuth)
+dat.frame(noaz.test = map@data$az1==0 & map@data$az2 >0)
