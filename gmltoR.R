@@ -15,15 +15,12 @@ checkgml <- function(x){
                      max(gregexpr('.', x, fixed=TRUE)[[1]]) - 1)
   
   map <- readOGR(dsn= x, layer= layername[1])
-  data.frame(lgdist.test = map@data$diam1 > 500 & map@data$diam2 > 500 
-             & map@data$diam3 > 500 & map@data$diam4 > 500)
-  data.frame(
-
-  )
+  data.frame(lgdist.test = map@data$dist1 > 500 & map@data$dist2 > 500 
+             & map@data$dist3 > 500 & map@data$dist4 > 500)
+ 
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
 }
-apply(map,checkgml)
-??FUN
+
 
