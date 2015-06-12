@@ -10,3 +10,5 @@ data.frame(twin.test = adair@data$diam1 == adair@data$diam2)
 data.frame(small.test = adair@data$diam1 < 1 & adair@data$diam2 < 1 & adair@data$diam3 < 1 & adair@data$diam4 < 1)
 # test to see if distance recorded is >500
 data.frame(lgdist.test = map@data$dist1 > 500 & map@data$dist2 > 500 & map@data$dist3 > 500 & map@data$dist4 > 500)
+#test to see if diameter is greater than 60 inches
+data.frame(lgdiam.test = map@data$diam1 > 60 & map@data$diam2 > 60 & map@data$diam3 > 60 & map@data$diam4 > 60)
