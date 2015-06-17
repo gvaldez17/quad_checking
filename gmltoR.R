@@ -6,8 +6,10 @@ filename <- "data/Adair/Adair.gml"
 layername <- ogrListLayers("data/Adair/Adair.gml")
 #assign shapefile/gml to a variable called adair using readOGR. dsn is location 
 adair <- readOGR(dsn= "data/Adair/Adair.gml", layer= layername[1])
-#make a function to convert gml into R and can return a data frame
+#make a function that converts gml into R and can return a data frame
 checkgml <- function(x){
+  #function taking in a file name, opeing it up as a spatial points data.frame,
+  #running tests, making a plot and outputting the tests as a data.frame
   layername <- ogrListLayers(x)
   
   map_name <- substr(x, 
@@ -15,12 +17,29 @@ checkgml <- function(x){
                      max(gregexpr('.', x, fixed=TRUE)[[1]]) - 1)
   
   map <- readOGR(dsn= x, layer= layername[1])
-  data.frame(lgdist.test = map@data$dist1 > 500 & map@data$dist2 > 500 
-             & map@data$dist3 > 500 & map@data$dist4 > 500)
- 
+  tests <- data.frame(lgdist = map@data$dist1 > 500 & map@data$dist2 > 500 &
+                                      map@data$dist3 > 500 & map@data$dist4 > 500,
+                      nodist = map@data$dist1==0 & map@data$dist2 > 0,
+                      az = map@data$az1 > 90, diam.test = is.na(map@data$diam1) & !is.na(map@data$diam2),
+                      val = map@data$species1 > 0 & map@data$species2 > 0,
+                      twin = map@data$diam1 == map@data$diam2,
+                      small = map@data$diam1 < 1 & map@data$diam2 < 1 & map@data$diam3 < 1 & map@data$diam4 < 1,
+                      lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
+                                    map@data$diam3 > 60 & map@data$diam4 > 60,
+                      nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
+                      noaz = map@data$az1==0 & map@data$az2 >0
+                      )
+ #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
+  
+  tests
 }
+
+allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
+map_tests <- (lapply(allfiles,checkgml))
+              
+map_tests
 
 
