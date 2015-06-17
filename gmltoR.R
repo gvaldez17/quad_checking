@@ -33,8 +33,8 @@ checkgml <- function(x){
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
-  
-  list("x","y", lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
+  `coordinates<-`(map, c("x","y"))
+  list(coordinates, lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
 } 
 
 allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
