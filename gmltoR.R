@@ -23,7 +23,7 @@ checkgml <- function(x){
                       az = map@data$az1 > 90, diam.test = is.na(map@data$diam1) & !is.na(map@data$diam2),
                       val = is.na(map@data$species1) & !is.na(map@data$species2),
                       twin = map@data$diam1 == map@data$diam2,
-                      small = map@data$diam1 < 1 & map@data$diam2 < 1 & map@data$diam3 < 1 & map@data$diam4 < 1,
+                      smdiam = map@data$diam1 < 1 & map@data$diam2 < 1 & map@data$diam3 < 1 & map@data$diam4 < 1,
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
@@ -34,7 +34,7 @@ checkgml <- function(x){
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
   
-  list(x,y, lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
+  list("x","y", lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
 } 
 
 allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
@@ -46,5 +46,5 @@ rowSums(map_tests[[1]])
 #apply the rowSums function to the map_tests list, giving a vector of values for each file
 lapply(map_tests,rowSums)
 
-
+??coordinates
 
