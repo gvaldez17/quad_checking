@@ -21,11 +21,11 @@ checkgml <- function(x){
                                       map@data$dist3 > 500 & map@data$dist4 > 500,
                       nodist = map@data$dist1==0 & map@data$dist2 > 0,
                       az = map@data$az1 > 90, diam.test = is.na(map@data$diam1) & !is.na(map@data$diam2),
-                      val = map@data$species1 > 0 & map@data$species2 > 0,
+                      val = is.na(map@data$species1) & !is.na(map@data$species2),
                       twin = map@data$diam1 == map@data$diam2,
                       small = map@data$diam1 < 1 & map@data$diam2 < 1 & map@data$diam3 < 1 & map@data$diam4 < 1,
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
-                                    map@data$diam3 > 60 & map@data$diam4 > 60,
+                                     map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
                       noaz = map@data$az1==0 & map@data$az2 >0
                       )
@@ -34,12 +34,15 @@ checkgml <- function(x){
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
   
-  tests
+  list(the coordinates, tests)
 }
 
 allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
 map_tests <- (lapply(allfiles,checkgml))
               
 map_tests
-
+#making a vector of values for the first file
+rowSums(map_tests[[1]])
+#apply the rowSums function to the map_tests list, giving a vector of values for each file
+lapply(map_tests,rowSums)
 
