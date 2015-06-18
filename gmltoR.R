@@ -63,10 +63,8 @@ primarydata_frame
 #plotting a data frame for all of the individual data sets together
 big_frame <- do.call(rbind.data.frame, primarydata_frame)
 #plot the data from big_frame and use the x1 coord as x axis and x2coord as y axis
-plot(big_frame$coords.x1, big_frame$coords.x2)
-#values that show up: NA, 0, 1:flagged value
-#plot different colors based on the amount of flags at a certain location
-data$Colour[big_frame$flags>=1]="red"
-data$Colour[big_frame$flags<=0]="blue"
-# Plot all points at once, using newly generated colours
-plot(data$col_name1,data$col_name2, ylim=c(0,5), col=data$Colour, ylim=c(0,10))
+plot(big_frame$coords.x1, big_frame$coords.x2, col=big_frame$flags)
+#flags of zero or NA not included
+plot(coords.x2 ~ coords.x1, data = big_frame[big_frame$flags>0,], col = flags, pch=19, cex=0.5)
+
+
