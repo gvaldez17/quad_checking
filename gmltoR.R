@@ -27,13 +27,12 @@ checkgml <- function(x){
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
-                      noaz = map@data$az1==0 & map@data$az2 >0
-                      )
+                      noaz = map@data$az1==0 & map@data$az2 >0)
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
-  `coordinates<-`(map, c("x","y"))
+  coordniates(map_name, c("x", "y")
   list(coordinates, lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
 } 
 
