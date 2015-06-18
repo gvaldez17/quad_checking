@@ -17,8 +17,9 @@ checkgml <- function(x){
                      max(gregexpr('.', x, fixed=TRUE)[[1]]) - 1)
   
   map <- readOGR(dsn= x, layer= layername[1])
+  #making a dataframe which includes the map name and x and y coordinates
   geo <- data.frame(map_name,coordinates(map))
-  
+  #making a dataframe which includes column names for each test
   tests <- data.frame(lgdist = map@data$dist1 > 500 & map@data$dist2 > 500 &
                                       map@data$dist3 > 500 & map@data$dist4 > 500,
                       nodist = map@data$dist1==0 & map@data$dist2 > 0,
@@ -34,22 +35,20 @@ checkgml <- function(x){
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
-  list(geo,test)
+  #list that includes the data frames geo and tests
+  list(geo,tests)
 } 
 
 allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
+#takes allfiles and runs check gml on each file, 
+#then assigns it to a variable called map_tests
 map_tests <- (lapply(allfiles,checkgml))
-              
+#map_tests runs the entire function over all of the files              
 map_tests
 #making a vector of values for the first file
 rowSums(map_tests[[1]])
-#apply the rowSums function to the map_tests list, giving a vector of values for each file
+#apply the rowSums function to the map_tests list, get a vector of values for each file
 lapply(map_tests,rowSums)
-#adding x and y columns
-data.frame(map_name,coordinates(map))
-attributes <- as.data.frame(cbind(geo,tests))
-xy <- cbind(x,y)
+#apply the FUNC 
+lapply(
 
-??coordinates 
-
-?cbind
