@@ -32,7 +32,7 @@ checkgml <- function(x){
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
-  coordniates(map_name, c("x", "y")
+  coordniates(map_name) <- c("x", "y")
   list(coordinates, lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
 } 
 
@@ -45,5 +45,6 @@ rowSums(map_tests[[1]])
 #apply the rowSums function to the map_tests list, giving a vector of values for each file
 lapply(map_tests,rowSums)
 
-??coordinates
+
+??coordinates 
 
