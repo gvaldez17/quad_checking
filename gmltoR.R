@@ -17,6 +17,8 @@ checkgml <- function(x){
                      max(gregexpr('.', x, fixed=TRUE)[[1]]) - 1)
   
   map <- readOGR(dsn= x, layer= layername[1])
+  geo <- data.frame(map_name,coordinates(map))
+  
   tests <- data.frame(lgdist = map@data$dist1 > 500 & map@data$dist2 > 500 &
                                       map@data$dist3 > 500 & map@data$dist4 > 500,
                       nodist = map@data$dist1==0 & map@data$dist2 > 0,
@@ -32,7 +34,7 @@ checkgml <- function(x){
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
-  list(coordinates, lgdist, nodist, az, diam.test, val, twin, small, lgdiam, nodiam, noaz)
+  list(geo,test)
 } 
 
 allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
@@ -44,10 +46,10 @@ rowSums(map_tests[[1]])
 #apply the rowSums function to the map_tests list, giving a vector of values for each file
 lapply(map_tests,rowSums)
 #adding x and y columns
-coordniates(map_name) <- c("x", "y")
-attributes <- as.data.frame(cbind(,))
+data.frame(map_name,coordinates(map))
+attributes <- as.data.frame(cbind(geo,tests))
 xy <- cbind(x,y)
-
 
 ??coordinates 
 
+?cbind
