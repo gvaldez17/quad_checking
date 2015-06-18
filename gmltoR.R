@@ -1,22 +1,31 @@
 #tell R to fetch the rgdal package to get tools to open the shape file, can also use lib in place of req
 require(rgdal)
-#this is the filename
-filename <- "data/Adair/Adair.gml"
-#list layers associated with file
-layername <- ogrListLayers("data/Adair/Adair.gml")
-#assign shapefile/gml to a variable called adair using readOGR. dsn is location 
-adair <- readOGR(dsn= "data/Adair/Adair.gml", layer= layername[1])
 #make a function that converts gml into R and can return a data frame
 checkgml <- function(x){
   #function taking in a file name, opeing it up as a spatial points data.frame,
   #running tests, making a plot and outputting the tests as a data.frame
+  cat(x)
   layername <- ogrListLayers(x)
   
   map_name <- substr(x, 
                      max(gregexpr('/', x, fixed=TRUE)[[1]]) + 1, 
                      max(gregexpr('.', x, fixed=TRUE)[[1]]) - 1)
   
-  map <- readOGR(dsn= x, layer= layername[1])
+  map <- try(readOGR(dsn= x, layer= layername[1]))
+  
+  if(class(map)=='try-error'){
+    return(list(geo=data.frame(map_name=NA, coords.x1 = NA, coords.x2=NA),
+                tests = data.frame(lgdist = NA,
+                                    nodist = NA,
+                                    az = NA,
+                                    val = NA,
+                                    twin = NA,
+                                    smdiam = NA,
+                                    lgdiam = NA,
+                                    nodiam = NA,
+                                    noaz = NA)))
+  }
+  
   #making a dataframe which includes the map name and x and y coordinates
   geo <- data.frame(map_name,coordinates(map))
   #making a dataframe which includes column names for each test
@@ -32,39 +41,36 @@ checkgml <- function(x){
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
                       noaz = map@data$az1==0 & map@data$az2 >0)
+  keep <- rowSums(is.na(tests)) == 0
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
   plot(map, col = 'red', pch=19, cex = 0.5, main = map_name)
   trash <- dev.off()
   #list that includes the data frames geo and tests
-  list(geo = geo,tests = tests)
+  
+ list(geo = geo[keep,],tests = tests[keep,])
+ 
 } 
 #assigns a path to a variable, allfiles
-allfiles <- list.files('data/', recursive = TRUE, full.names = TRUE, pattern = 'gml')
+allfiles <- list.files('\\\\discovery\\Williams\\students\\Former_Students\\BenS\\DigitizingMI\\quadPts', recursive = TRUE, full.names = TRUE, pattern = 'gml')
 #takes allfiles and runs check gml on each file, 
 #then assigns it to a variable called map_tests
 map_tests <- (lapply(allfiles,checkgml))
 
 #map_tests runs the entire function over all of the files              
-map_tests
+#map_tests
 #making a vector of values for the first file
-rowSums(map_tests[[1]])
+#rowSums(map_tests[[1]])
 #apply the rowSums function to the map_tests list, get a vector of values for each file
-lapply(map_tests,rowSums)
-#apply a function over a list of lists to make a data.frame
-lapply(map_tests,function(x){
-  data.frame(x$geo,flags = rowSums(x$tests),x$tests)
-  })
+#lapply(map_tests,rowSums)
+
 #assign the data.frame function to a variable
 primarydata_frame<- lapply(map_tests,function(x){
   data.frame(x$geo,flags = rowSums(x$tests),x$tests)
 })
-primarydata_frame
 #plotting a data frame for all of the individual data sets together
 big_frame <- do.call(rbind.data.frame, primarydata_frame)
 #plot the data from big_frame and use the x1 coord as x axis and x2coord as y axis
 plot(big_frame$coords.x1, big_frame$coords.x2, col=big_frame$flags)
 #flags of zero or NA not included
 plot(coords.x2 ~ coords.x1, data = big_frame[big_frame$flags>0,], col = flags, pch=19, cex=0.5)
-
-
