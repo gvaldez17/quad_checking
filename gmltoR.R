@@ -18,6 +18,7 @@ checkgml <- function(x){
                 tests = data.frame(lgdist = NA,
                                     nodist = NA,
                                     az = NA,
+                                   diam.test = NA,
                                     val = NA,
                                     twin = NA,
                                     smdiam = NA,
@@ -32,7 +33,8 @@ checkgml <- function(x){
   tests <- data.frame(lgdist = map@data$dist1 > 500 & map@data$dist2 > 500 &
                                       map@data$dist3 > 500 & map@data$dist4 > 500,
                       nodist = map@data$dist1==0 & map@data$dist2 > 0,
-                      az = map@data$az1 > 90, diam.test = is.na(map@data$diam1) & !is.na(map@data$diam2),
+                      az = map@data$az1 > 90, 
+                      diam.test = is.na(map@data$diam1) & !is.na(map@data$diam2),
                       val = is.na(map@data$species1) & !is.na(map@data$species2),
                       twin = map@data$diam1 == map@data$diam2,
                       smdiam = map@data$diam1 < 1 & map@data$diam2 < 1 & 
@@ -69,7 +71,15 @@ primarydata_frame<- lapply(map_tests,function(x){
   data.frame(x$geo,flags = rowSums(x$tests),x$tests)
 })
 #plotting a data frame for all of the individual data sets together
-big_frame <- do.call(rbind.data.frame, primarydata_frame)
+big_frame <- na.omit(do.call(rbind.data.frame, primarydata_frame))
+
+coordinates(big_frame) <- ~coords.x1 + coords.x2
+
+writeOGR(big_frame, 
+         dsn='C:\\Users\\willlab\\Documents\\GitHub\\quad_checking\\data_check.shp', 
+         'data_check',
+         driver = 'ESRI Shapefile')
+
 #plot the data from big_frame and use the x1 coord as x axis and x2coord as y axis
 plot(big_frame$coords.x1, big_frame$coords.x2, col=big_frame$flags)
 #flags of zero or NA not included
