@@ -25,8 +25,9 @@ checkgml <- function(x){
                                     smdiam = NA,
                                     lgdiam = NA,
                                     nodiam = NA,
-                                    noaz = NA
-                                    one&2lgdist = NA)))
+                                    noaz = NA,
+                                    one&2lgdist = NA,
+                                    exacttwin = NA)))
   }
   
   #making a dataframe which includes the map name and x and y coordinates
@@ -44,8 +45,11 @@ checkgml <- function(x){
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
-                      noaz = map@data$az1==0 & map@data$az2 >0
-                      one&2lgdist = map@data$dist1 > 75 & map@data$dist2 > 75)
+                      noaz = map@data$az1==0 & map@data$az2 >0,
+                      one&2lgdist = map@data$dist1 > 75 & map@data$dist2 > 75,
+                      exacttwin = map@data$dist1 == map@data$dist2 & 
+                                    map@data$diam1 == map@data$diam2 & 
+                                    map@data$az1 == map@data$az2))
   keep <- rowSums(is.na(tests)) == 0
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
