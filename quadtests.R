@@ -16,3 +16,5 @@ data.frame(lgdiam.test = map@data$diam1 > 60 & map@data$diam2 > 60 & map@data$di
 data.frame(nodiam.test = map@data$diam1==0 & map@data$diam2 > 0)
 #test to see if ree one has no value (0) while tree two has a value (azimuth)
 dat.frame(noaz.test = map@data$az1==0 & map@data$az2 >0)
+#test to see if both trees have a distance greater than 75
+lgdist.test = map@data$dist1 > 75 & map@data$dist2 > 75
