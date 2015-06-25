@@ -15,7 +15,6 @@ checkgml <- function(x){
   
   if(class(map)=='try-error'){
     return(list(geo=data.frame(map_name=NA, coords.x1 = NA, coords.x2=NA),
-                point = map@data[,]
                 tests = data.frame(lgdist = NA,
                                     nodist = NA,
                                     az = NA,
@@ -25,9 +24,7 @@ checkgml <- function(x){
                                     smdiam = NA,
                                     lgdiam = NA,
                                     nodiam = NA,
-                                    noaz = NA,
-                                    one&2lgdist = NA,
-                                    exacttwin = NA)))
+                                    noaz = NA)))
   }
   
   #making a dataframe which includes the map name and x and y coordinates
@@ -45,11 +42,7 @@ checkgml <- function(x){
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
-                      noaz = map@data$az1==0 & map@data$az2 >0,
-                      one&2lgdist = map@data$dist1 > 75 & map@data$dist2 > 75,
-                      exacttwin = map@data$dist1 == map@data$dist2 & 
-                                    map@data$diam1 == map@data$diam2 & 
-                                    map@data$az1 == map@data$az2))
+                      noaz = map@data$az1==0 & map@data$az2 >0)
   keep <- rowSums(is.na(tests)) == 0
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
@@ -85,7 +78,7 @@ coordinates(big_frame) <- ~coords.x1 + coords.x2
 writeOGR(big_frame, 
          dsn='C:\\Users\\willlab\\Documents\\GitHub\\quad_checking\\data_check.shp', 
          'data_check',
-         driver = 'ESRI Shapefile')
+         driver = 'ESRI Shapefile', overwrite= TRUE)
 
 #plot the data from big_frame and use the x1 coord as x axis and x2coord as y axis
 plot(big_frame$coords.x1, big_frame$coords.x2, col=big_frame$flags)
