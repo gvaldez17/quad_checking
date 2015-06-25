@@ -18,13 +18,15 @@ checkgml <- function(x){
                 tests = data.frame(lgdist = NA,
                                     nodist = NA,
                                     az = NA,
-                                   diam.test = NA,
+                                    diam = NA,
                                     val = NA,
                                     twin = NA,
                                     smdiam = NA,
                                     lgdiam = NA,
                                     nodiam = NA,
-                                    noaz = NA)))
+                                    noaz = NA,
+                                    matchlgdist = NA,
+                                    ddtwin = NA )))
   }
   
   #making a dataframe which includes the map name and x and y coordinates
@@ -34,7 +36,7 @@ checkgml <- function(x){
                                       map@data$dist3 > 500 | map@data$dist4 > 500,
                       nodist = map@data$dist1==0 & map@data$dist2 > 0,
                       az = map@data$az1 > 90, 
-                      diam.test = is.na(map@data$diam1) & !is.na(map@data$diam2),
+                      diam = is.na(map@data$diam1) & !is.na(map@data$diam2),
                       val = is.na(map@data$species1) & !is.na(map@data$species2),
                       twin = map@data$diam1 == map@data$diam2,
                       smdiam = map@data$diam1 < 1 | map@data$diam2 < 1 | 
@@ -42,7 +44,10 @@ checkgml <- function(x){
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
-                      noaz = map@data$az1==0 & map@data$az2 >0)
+                      noaz = map@data$az1==0 & map@data$az2 >0,
+                      matchlgdist = map@data$dist1 > 75 | map@data$dist2 > 75,
+                      ddtwin = map@data$dist1 == map@data$dist2 & 
+                                    map@data$diam1 == map@data$diam2)
   keep <- rowSums(is.na(tests)) == 0
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
