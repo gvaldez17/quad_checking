@@ -26,7 +26,8 @@ checkgml <- function(x){
                                     nodiam = NA,
                                     noaz = NA,
                                     matchlgdist = NA,
-                                    ddtwin = NA )))
+                                    ddtwin = NA,
+                                    noname = NA )))
   }
   
   #making a dataframe which includes the map name and x and y coordinates
@@ -47,7 +48,9 @@ checkgml <- function(x){
                       noaz = map@data$az1==0 & map@data$az2 >0,
                       matchlgdist = map@data$dist1 > 75 | map@data$dist2 > 75,
                       ddtwin = map@data$dist1 == map@data$dist2 & 
-                                    map@data$diam1 == map@data$diam2)
+                                    map@data$diam1 == map@data$diam2,
+                      noname =  is.na(map@data$species1) & (!is.na(map@data$dist1) | !is.na(map@data$diam1)) | is.na(map@data$species2) & 
+                                    (!is.na(map@data$dist2) | !is.na(map@data$diam2)))
   keep <- rowSums(is.na(tests)) == 0
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
