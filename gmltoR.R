@@ -18,7 +18,6 @@ checkgml <- function(x){
                 tests = data.frame(lgdist = NA,
                                     nodist = NA,
                                     az = NA,
-                                    diam = NA,
                                     val = NA,
                                     twin = NA,
                                     smdiam = NA,
@@ -37,7 +36,6 @@ checkgml <- function(x){
                                       map@data$dist3 > 500 | map@data$dist4 > 500,
                       nodist = map@data$dist1==0 & map@data$dist2 > 0,
                       az = map@data$az1 > 90, 
-                      diam = is.na(map@data$diam1) & !is.na(map@data$diam2),
                       val = is.na(map@data$species1) & !is.na(map@data$species2),
                       twin = map@data$diam1 == map@data$diam2,
                       smdiam = map@data$diam1 < 1 & map@data$diam2 < 1 & 
