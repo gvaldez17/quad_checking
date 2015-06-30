@@ -92,3 +92,5 @@ writeOGR(big_frame,
 plot(big_frame$coords.x1, big_frame$coords.x2, col=big_frame$flags)
 #flags of zero or NA not included
 plot(coords.x2 ~ coords.x1, data = big_frame[big_frame$flags>0,], col = flags, pch=19, cex=0.5)
+#write a new .csv file for excel to keep track of the flags
+write.csv(big_frame@data, 'check_files_v1.csv'))
