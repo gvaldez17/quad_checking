@@ -29,6 +29,22 @@ checkgml <- function(x){
                                     noname = NA )))
   }
   
+  ###############################################################################
+  #  This is to flip the distances and diameters.  They were entered incorrectly.
+  #  This should only happen once, we're flagging 'flipped' shapefiles with a new
+  #  column called 'flipped', so if the dataset is missing the column then we accept
+  #  it and move on, otherwise we flip:
+  
+  if(!'flipped' %in% names(map)){
+    flip_dist <- map@data[ , regexpr('^diam[1-4]$', names(map))>0]
+    flip_diam <- map@data[ , regexpr('^dist[1-4]$', names(map))>0]
+    
+    map@data[ ,regexpr('^dist[1-4]$', names(map))>0] <- flip_dist
+    map@data[ ,regexpr('^diam[1-4]$', names(map))>0] <- flip_diam
+    map@data$flipped <- TRUE
+    writeOGR(obj = map, dsn= x, layer= layername[1], overwrite=TRUE, driver = 'GML')
+  }
+  
   #making a dataframe which includes the map name and x and y coordinates
   geo <- data.frame(map_name,coordinates(map))
   #making a dataframe which includes column names for each test
