@@ -18,15 +18,14 @@ checkgml <- function(x){
                 tests = data.frame(lgdist = NA,
                                     nodist = NA,
                                     az = NA,
-                                    val = NA,
-                                    twin = NA,
+                                    nospec = NA,
                                     smdiam = NA,
                                     lgdiam = NA,
                                     nodiam = NA,
                                     noaz = NA,
-                                    matchlgdist = NA,
                                     ddtwin = NA,
-                                    noname = NA )))
+                                    noname = NA,
+                                    twoquad = NA)))
   }
   
   ###############################################################################
@@ -45,26 +44,30 @@ checkgml <- function(x){
     writeOGR(obj = map, dsn= x, layer= layername[1], overwrite=TRUE, driver = 'GML')
   }
   
+  map@data[map@data == 0] <- NA
+  
   #making a dataframe which includes the map name and x and y coordinates
   geo <- data.frame(map_name,coordinates(map))
   #making a dataframe which includes column names for each test
-  tests <- data.frame(lgdist = map@data$dist1 > 500 | map@data$dist2 > 500 |
-                                      map@data$dist3 > 500 | map@data$dist4 > 500,
-                      nodist = map@data$dist1==0 & map@data$dist2 > 0,
-                      az = map@data$az1 > 90, 
-                      val = is.na(map@data$species1) & !is.na(map@data$species2),
-                      twin = map@data$diam1 == map@data$diam2,
+  tests <- data.frame(lgdist = map@data$dist1 > 400 | map@data$dist2 > 400 |
+                                      map@data$dist3 > 400 | map@data$dist4 > 400,
+                      nodist = map@data$dist1==0 & (map@data$dist2 > 0| map@data$dist3 > 0 | map@data$dist4 > 0),
+                      az = apply(map@data[, regexpr('^az[1-4]$', colnames(map@data))>0] > 90, 1, any, na.rm=TRUE), 
+                      nospec = is.na(map@data$species1) & !is.na(map@data$species2),
                       smdiam = map@data$diam1 < 1 & map@data$diam2 < 1 & 
                                      map@data$diam3 < 1 & map@data$diam4 < 1,
                       lgdiam = map@data$diam1 > 60 & map@data$diam2 > 60 &
                                      map@data$diam3 > 60 & map@data$diam4 > 60,
                       nodiam = (map@data$diam1==0 | is.na(map@data$diam1)) & map@data$diam2 > 0,
                       noaz = map@data$az1==0 & map@data$az2 >0,
-                      matchlgdist = map@data$dist1 > 75 | map@data$dist2 > 75,
                       ddtwin = map@data$dist1 == map@data$dist2 & 
                                     map@data$diam1 == map@data$diam2,
-                      noname =  is.na(map@data$species1) & (!is.na(map@data$dist1) | !is.na(map@data$diam1)) | is.na(map@data$species2) & 
-                                    (!is.na(map@data$dist2) | !is.na(map@data$diam2)))
+                      noname =  is.na(map@data$species1) & (!is.na(map@data$dist1) | !is.na(map@data$diam1)) | 
+                                  is.na(map@data$species2) & (!is.na(map@data$dist2) | !is.na(map@data$diam2)),
+                      twoquad = apply(cbind(rowSums(map@data[,regexpr('^Q[1-4]$', colnames(map@data))>0] == 1, na.rm=TRUE) > 1,
+                                            rowSums(map@data[,regexpr('^Q[1-4]$', colnames(map@data))>0] == 2, na.rm=TRUE) > 1,
+                                            rowSums(map@data[,regexpr('^Q[1-4]$', colnames(map@data))>0] == 3, na.rm=TRUE) > 1,
+                                            rowSums(map@data[,regexpr('^Q[1-4]$', colnames(map@data))>0] == 4, na.rm=TRUE) > 1), 1, any, na.rm=TRUE))
   keep <- rowSums(is.na(tests)) == 0
  #opening and closing the plotting device
   png(file= paste0("figures/", map_name, ".png"))
@@ -107,4 +110,4 @@ plot(big_frame$coords.x1, big_frame$coords.x2, col=big_frame$flags)
 #flags of zero or NA not included
 plot(coords.x2 ~ coords.x1, data = big_frame[big_frame$flags>0,], col = flags, pch=19, cex=0.5)
 #write a new .csv file for excel to keep track of the flags
-write.csv(big_frame@data,'check_files_v2.csv')
+write.csv(big_frame@data,'check_files_v3.csv')
